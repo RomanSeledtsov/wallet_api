@@ -51,6 +51,7 @@ def create_operation(wallet_id: str, operation: schemas.OperationCreate,
 
     try:
         wallet = db.query(models.Wallet).filter(models.Wallet.id == wallet_id).with_for_update().first()
+        # Блок записи на время транзакции
         if wallet is None:
             raise HTTPException(status_code=404, detail="Wallet not found")
 

@@ -9,6 +9,8 @@ services:
       - DATABASE_URL=postgresql://postgres:postgres@db/postgres
     volumes:
       - ./migrations:/app/migrations
+      - ./app:/app/app
+      - ./tests:/app/tests
 
   db:
     image: postgres:13
@@ -29,7 +31,9 @@ services:
       - DATABASE_URL=postgresql://postgres:postgres@db/postgres
     command: pytest
     volumes:
-      - .:/app
+      - ./app:/app/app
+      - ./tests:/app/tests
+      - ./migrations:/app/migrations
 
 volumes:
   postgres_data:

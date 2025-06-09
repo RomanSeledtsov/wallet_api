@@ -1,4 +1,5 @@
-from sqlalchemy import Column, String, Numeric, DateTime, Boolean
+import uuid
+from sqlalchemy import Column, String, Numeric, DateTime, Boolean, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
 from .database import Base
@@ -15,8 +16,8 @@ class Wallet(Base):
 class Transaction(Base):
     __tablename__ = "transactions"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, index=True)
-    wallet_id = Column(UUID(as_uuid=True), index=True)
-    operation_type = Column(String(10), nullable=False)  # 'DEPOSIT' или 'WITHDRAW'
+    id = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4)
+    wallet_id = Column(UUID(as_uuid=True), ForeignKey("wallets.id"), index=True)
+    operation_type = Column(String(10), nullable=False)  # 'DEPOSIT' | 'WITHDRAW'
     amount = Column(Numeric(scale=2), nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())

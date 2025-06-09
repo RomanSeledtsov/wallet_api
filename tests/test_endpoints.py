@@ -35,7 +35,7 @@ def test_full_wallet_flow():
     print("DEPOSIT response status:", resp.status_code)
     print("DEPOSIT response body:", resp.text)
     assert resp.status_code == 201
-    assert resp.json()["balance"] == "1000"
+    assert Decimal(resp.json()["balance"]) == Decimal("1000")
 
     # Снятие
     resp = client.post(
@@ -52,7 +52,7 @@ def test_full_wallet_flow():
     print("GET balance response status:", resp.status_code)
     print("GET balance response body:", resp.text)
     assert resp.status_code == 200
-    assert resp.json()["balance"] == 600
+    assert Decimal(resp.json()["balance"]) == Decimal("600")
 
     # Недостаточно средств
     resp = client.post(

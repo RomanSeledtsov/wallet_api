@@ -69,7 +69,7 @@ def create_operation(wallet_id: str, operation: schemas.OperationCreate,
         transaction = models.Transaction(
             id=uuid.uuid4(),
             wallet_id=wallet.id,
-            operation_type=str(operation.operation_type),
+            operation_type=operation.operation_type.value,
             amount=operation.amount,
         )
 
@@ -84,20 +84,23 @@ def create_operation(wallet_id: str, operation: schemas.OperationCreate,
             "amount": str(operation.amount),
         }
 
-    except SQLAlchemyError:
+    except SQLAlchemyError as e:
+        print("SQLAlchemyError detail:", e, flush=True)
+
         db.rollback()
         raise HTTPException(status_code=500, detail="Database error")
 
 
 @app.get("/api/v1/wallets/{wallet_id}", response_model=schemas.WalletResponse)
 def get_balance(wallet_id: str, db: Session = Depends(get_db)):
-    try:
-        wallet_uuid = uuid.UUID(wallet_id)
-    except ValueError:
-        raise HTTPException(status_code=400, detail="Invalid wallet ID")
-
     wallet = db.query(models.Wallet).filter(models.Wallet.id == wallet_id).first()
     if not wallet:
         raise HTTPException(status_code=404, detail="Wallet not found")
 
-    return wallet
+    return {
+        "id": str(wallet.id),
+        "balance": wallet.balance,
+        "is_active": wallet.is_active,
+        "created_at": wallet.created_at,
+        "updated_at": wallet.updated_at,
+    }

@@ -9,6 +9,22 @@ from . import models, schemas, database
 
 app = FastAPI()
 
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+import traceback
+
+
+@app.middleware("http")
+async def catch_exceptions_middleware(request: Request, call_next):
+    try:
+        response = await call_next(request)
+        return response
+    except Exception as e:
+        tb = traceback.format_exc()
+        print(f"Exception during request: {tb}")
+        return JSONResponse(status_code=500, content={"detail": "Internal Server Error"})
+
+
 models.Base.metadata.create_all(bind=database.engine)
 
 

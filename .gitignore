@@ -1,9 +1,22 @@
-.venv
+
+.venv/
 env/
+
 
 __pycache__/
 *.pyc
 
-.idea
 
 
+
+
+.env
+.env.*
+
+
+*.pid
+*.sock
+
+
+.vscode/
+.idea/

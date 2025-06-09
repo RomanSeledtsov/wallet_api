@@ -1,4 +1,5 @@
 from logging.config import fileConfig
+
 from sqlalchemy import create_engine, pool
 from alembic import context
 import os
@@ -13,6 +14,11 @@ from app.models import Wallet, Transaction # noqa
 from app.database import SQLALCHEMY_DATABASE_URL
 
 config = context.config
+script_location = config.get_main_option("script_location")
+versions_path = os.path.join(script_location, "versions")
+
+print(f"script_location: {script_location}")
+print(f"versions_path: {versions_path}")
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)

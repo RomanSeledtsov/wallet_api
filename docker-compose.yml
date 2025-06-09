@@ -7,8 +7,8 @@ services:
       - db
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@db/postgres
-#    volumes:
-#      - ./migrations:/app/migrations
+    volumes:
+      - ./migrations:/app/migrations
 
   db:
     image: postgres:13
@@ -20,6 +20,16 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+  tests:
+    build: .
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db/postgres
+    command: pytest
+    volumes:
+      - .:/app
 
 volumes:
   postgres_data:
